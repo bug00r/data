@@ -12,6 +12,8 @@ endif
 BUILDDIR?=$(BUILDROOT)$(PATHSEP)$(CC)
 BUILDPATH?=$(BUILDDIR)$(PATHSEP)
 
+INSTALL_ROOT?=$(BUILDPATH)
+
 ifeq ($(DEBUG),1)
 	export debug=-ggdb -Ddebug=1
 	export isdebug=1
@@ -72,4 +74,9 @@ createdir:
 
 clean:
 	-rm -dr $(BUILDROOT)
-	
+
+install:
+	mkdir -p $(INSTALL_ROOT)include
+	mkdir -p $(INSTALL_ROOT)lib
+	cp ./data.h $(INSTALL_ROOT)include/data.h
+	cp $(BUILDPATH)$(LIBNAME) $(INSTALL_ROOT)lib/$(LIBNAME)
