@@ -24,6 +24,27 @@ static data_t *	_data_copy_(data_t * _data);
 static data_t *	_data_copy_stack_(data_t * _data);
 static bool		_data_equals_(data_t * _data, data_t * _data2);
 
+void data_create_vtable(  data_vtbl_t* vt,
+			DATA_DELETE_FUNC df,
+			DATA_COPY_FUNC cf,
+			DATA_EQUALS_FUNC ef,
+			DATA_REAL_SIZE_FUNC rsf,
+			DATA_PRINT_FUNC pf
+) {
+	vt->delete = ( df == NULL ? _data_free_ : df );
+	vt->copy = ( cf == NULL ? _data_copy_ : cf );
+	vt->equals = ( ef == NULL ? _data_equals_ : ef );
+	vt->real_size = ( rsf == NULL ? _data_real_size_ : rsf );
+	vt->print = ( pf == NULL ? _data_print_ : pf );
+}
+
+static void __data_ctor_raw(data_t * _data, data_vtbl_t * const vtable) {
+	data_t * data = _data; 
+	data->vptr = vtable;
+	data->data = NULL;
+	data->size = 0;
+}
+
 void data_ctor(data_t * _data) {
 	data_t * data = _data; 
 	static struct data_vtbl const vtbl = {
@@ -33,9 +54,11 @@ void data_ctor(data_t * _data) {
 		&_data_real_size_,
 		&_data_print_
 	};
-	data->vptr = &vtbl;
-	data->data = NULL;
-	data->size = 0;
+	__data_ctor_raw(data, (data_vtbl_t * const)&vtbl);
+}
+
+void data_ctor_vtable(data_t * _data, data_vtbl_t * const vtable) {
+	__data_ctor_raw(_data, vtable);
 }
 
 data_t * data_new_empty() {
@@ -44,8 +67,22 @@ data_t * data_new_empty() {
 	return newdata;
 }
 
+data_t * data_new_empty_vtable(data_vtbl_t * const vtable) {
+	data_t * newdata = malloc(sizeof(data_t));
+	data_ctor_vtable(newdata, vtable);
+	return newdata;
+}
+
 data_t * data_new(void ** data, size_t size) {
 	data_t * newdata = data_new_empty();
+	newdata->data = *data;
+	*data = NULL;
+	newdata->size = size;
+	return newdata;
+}
+
+data_t * data_new_vtable(void ** data, size_t size, data_vtbl_t * const vtable) {
+	data_t * newdata = data_new_empty_vtable(vtable);
 	newdata->data = *data;
 	*data = NULL;
 	newdata->size = size;
@@ -61,9 +98,11 @@ void data_ctor_stack(data_t * _data) {
 		&_data_real_size_,
 		&_data_print_
 	};
-	data->vptr = &vtbl_stack;
-	data->data = NULL;
-	data->size = 0;
+	__data_ctor_raw(data, (data_vtbl_t * const)&vtbl_stack);
+}
+
+void data_ctor_stack_vtable(data_t * _data, data_vtbl_t * const vtable) {
+	__data_ctor_raw(_data, (data_vtbl_t * const)&vtable);
 }
 
 data_t * data_new_stack_empty() {
@@ -72,8 +111,21 @@ data_t * data_new_stack_empty() {
 	return newdata;
 }
 
+data_t * data_new_stack_empty_vtable(data_vtbl_t * const vtable) {
+	data_t * newdata = malloc(sizeof(data_t));
+	data_ctor_stack_vtable(newdata, vtable);
+	return newdata;
+}
+
 data_t * data_new_stack(void * data, size_t size) {
 	data_t * newdata = data_new_stack_empty();
+	newdata->data = data;
+	newdata->size = size;
+	return newdata;
+}
+
+data_t * data_new_stack_vtable(void *data, size_t size, data_vtbl_t * const vtable) {
+	data_t * newdata = data_new_stack_empty_vtable(vtable);
 	newdata->data = data;
 	newdata->size = size;
 	return newdata;

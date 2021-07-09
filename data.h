@@ -30,6 +30,12 @@ typedef struct {
 */
 #endif
 
+typedef void 	(*DATA_DELETE_FUNC)		(data_t *data);
+typedef data_t *(*DATA_COPY_FUNC)		(data_t *data);
+typedef bool	(*DATA_EQUALS_FUNC)		(data_t *data, data_t *data2);
+typedef size_t 	(*DATA_REAL_SIZE_FUNC)	(data_t *data);
+typedef void 	(*DATA_PRINT_FUNC)		(data_t *data);
+
 struct data_vtbl {
 	void 	(*delete)	(data_t *data);
 	data_t *(*copy)		(data_t *data);
@@ -38,6 +44,22 @@ struct data_vtbl {
 	void 	(*print)	(data_t *data);
 };
 
+typedef struct data_vtbl data_vtbl_t;
+
+
+#if 0
+/**
+ * creation func for vtable
+*/
+#endif
+void data_create_vtable( data_vtbl_t* vt,
+			DATA_DELETE_FUNC df,
+			DATA_COPY_FUNC cf,
+			DATA_EQUALS_FUNC ef,
+			DATA_REAL_SIZE_FUNC rsf,
+			DATA_PRINT_FUNC pf
+);
+
 #if 0
 /**
 	Data ctor only sets data.
@@ -45,6 +67,10 @@ struct data_vtbl {
 #endif
 void data_ctor(data_t * _data);
 void data_ctor_stack(data_t * _data);
+void data_ctor_vtable(data_t * _data, data_vtbl_t * const vtable);
+void data_ctor_stack_vtable(data_t * _data, data_vtbl_t * const vtable);
+
+
 #if 0
 /**
 	Data ctor used for Heap allocation. Does not works with stack variables. Because of the use 
@@ -53,6 +79,7 @@ void data_ctor_stack(data_t * _data);
 */
 #endif 
 data_t * data_new(void ** data, size_t size);
+data_t * data_new_vtable(void ** data, size_t size, data_vtbl_t * const vtable);
 
 #if 0
 /**
@@ -61,6 +88,7 @@ data_t * data_new(void ** data, size_t size);
 */
 #endif 
 data_t * data_new_stack(void * data, size_t size);
+data_t * data_new_stack_vtable(void *data, size_t size, data_vtbl_t * const vtable);
 #if 0
 /**
 	Data ctor for completly empty data segment. data will be NULL and size 0.
@@ -68,6 +96,8 @@ data_t * data_new_stack(void * data, size_t size);
 #endif 
 data_t * data_new_empty();
 data_t * data_new_stack_empty();
+data_t * data_new_empty_vtable(data_vtbl_t * const vtable);
+data_t * data_new_stack_empty_vtable(data_vtbl_t * const vtable);
 
 void data_free(data_t * data);
 
