@@ -49,32 +49,35 @@ CFLAGS+=-std=c11 -Wpedantic -pedantic-errors -Wall -Wextra
 #-ggdb -O1
 #-pg for profiling 
 
-SRC=data.c
+NAME=data
 
-LIBNAME=libdata.a
-OBJS=data.o
+SRC=$(NAME).c
 
-TESTSRC=test_data.c
-TESTBIN=test_data.exe
-TESTLIB=-ldata
+LIBNAME=lib$(NAME).a
+LIB=$(BUILDPATH)$(LIBNAME)
+OBJS=$(BUILDPATH)$(NAME).o
+
+TESTSRC=test_$(NAME).c
+TESTBIN=$(BUILDPATH)test_$(NAME).exe
+TESTLIB=-l$(NAME)
 TESTLIBDIR=-L$(BUILDPATH)
 
 
-all: createdir $(BUILDPATH)$(LIBNAME) $(BUILDPATH)$(TESTBIN) test
+all: createdir $(LIB) $(TESTBIN)
 
-$(BUILDPATH)$(LIBNAME): $(BUILDPATH)$(OBJS)
-	$(AR) $(ARFLAGS) $(BUILDPATH)$(LIBNAME) $(BUILDPATH)$(OBJS)
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
-$(BUILDPATH)$(OBJS): data.h
-	$(CC) $(CFLAGS) -c $(SRC) -o $(BUILDPATH)$(OBJS) $(debug)
+$(OBJS): data.h
+	$(CC) $(CFLAGS) -c $(SRC) -o $(OBJS) $(debug)
 	
-$(BUILDPATH)$(TESTBIN):
-	$(CC) $(CFLAGS) $(TESTSRC) -o $(BUILDPATH)$(TESTBIN) $(TESTLIBDIR) $(TESTLIB) $(debug)
+$(TESTBIN):
+	$(CC) $(CFLAGS) $(TESTSRC) -o $(TESTBIN) $(TESTLIBDIR) $(TESTLIB) $(debug)
 
 .PHONY: clean createdir test
 
 test:
-	./$(BUILDPATH)$(TESTBIN)
+	./$(TESTBIN)
 
 createdir:
 	mkdir -p $(BUILDDIR)
@@ -86,4 +89,4 @@ install:
 	mkdir -p $(INSTALL_ROOT)include
 	mkdir -p $(INSTALL_ROOT)lib$(BIT_SUFFIX)
 	cp ./data.h $(INSTALL_ROOT)include/data.h
-	cp $(BUILDPATH)$(LIBNAME) $(INSTALL_ROOT)lib$(BIT_SUFFIX)/$(LIBNAME)
+	cp $(LIB) $(INSTALL_ROOT)lib$(BIT_SUFFIX)/$(LIBNAME)

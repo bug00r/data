@@ -13,7 +13,7 @@ static size_t _data_real_size_(data_t * data) {
 }
 
 static void _data_print_(data_t * data) {
-	printf("data:\nAt:\t%p\nSize:\t%i\n", &data->data, data->size);
+	printf("data:\nAt:\t%p\nSize:\t%lli\n", data->data, data->size);
 }
 #if 0
 /**
