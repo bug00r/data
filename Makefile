@@ -66,13 +66,13 @@ TESTLIBDIR=-L$(BUILDPATH)
 all: createdir $(LIB) $(TESTBIN)
 
 $(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
+	$(AR) $(ARFLAGS) $@ $^
 
-$(OBJS): data.h
-	$(CC) $(CFLAGS) -c $(SRC) -o $(OBJS) $(debug)
+$(OBJS): $(NAME).h
+	$(CC) $(CFLAGS) -c $(SRC) -o $@ $(debug)
 	
 $(TESTBIN):
-	$(CC) $(CFLAGS) $(TESTSRC) -o $(TESTBIN) $(TESTLIBDIR) $(TESTLIB) $(debug)
+	$(CC) $(CFLAGS) $(TESTSRC) -o $@ $(TESTLIBDIR) $(TESTLIB) $(debug)
 
 .PHONY: clean createdir test
 
@@ -88,5 +88,5 @@ clean:
 install:
 	mkdir -p $(INSTALL_ROOT)include
 	mkdir -p $(INSTALL_ROOT)lib$(BIT_SUFFIX)
-	cp ./data.h $(INSTALL_ROOT)include/data.h
+	cp ./$(NAME).h $(INSTALL_ROOT)include/$(NAME).h
 	cp $(LIB) $(INSTALL_ROOT)lib$(BIT_SUFFIX)/$(LIBNAME)
