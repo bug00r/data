@@ -50,11 +50,11 @@ all: createdir $(LIB) $(TESTBIN)
 $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
-$(OBJS): $(NAME).h
-	$(CC) $(CFLAGS) -c $(SRC) -o $@ $(debug)
+$(BUILDDIR)/%.o : %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 	
-$(TESTBIN):
-	$(CC) $(CFLAGS) $(TESTSRC) -o $@ $(LDFLAGS) $(TESTLIBDIR) $(TESTLIB) $(debug)
+$(TESTBIN): $(LIB)
+	$(CC) $(CFLAGS) $(TESTSRC) -o $@ $(LDFLAGS) $(TESTLIBDIR) $(TESTLIB)
 
 .PHONY: clean createdir test
 
