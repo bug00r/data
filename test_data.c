@@ -12,7 +12,7 @@ static void _test_data_alloc_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * data = data_new((void**)&i, size_int);
+		Data * data = data_new((void**)&i, size_int);
 		
 		assert(i == NULL);
 		#ifdef debug 
@@ -25,7 +25,7 @@ static void _test_data_alloc_() {
 	{
 		size_t size_int = sizeof(unsigned int);
 		unsigned int i = 667;
-		data_t * data = data_new_stack(&i, size_int);
+		Data * data = data_new_stack(&i, size_int);
 		i = 669;
 		#ifdef debug 
 			data_print(data);
@@ -38,7 +38,7 @@ static void _test_data_alloc_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * data = data_new_stack(i, size_int);
+		Data * data = data_new_stack(i, size_int);
 		
 		assert(*i == 666);
 		#ifdef debug 
@@ -52,7 +52,7 @@ static void _test_data_alloc_() {
 	}
 	
 	{
-		data_t * data = data_new_empty();
+		Data * data = data_new_empty();
 		data_free(data);
 	}
 	#ifdef debug 
@@ -68,10 +68,10 @@ static void _test_data_copy_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * data = data_new((void**)&i, size_int);
+		Data * data = data_new((void**)&i, size_int);
 		assert(i == NULL);
 		
-		data_t * copy = data_copy(data);
+		Data * copy = data_copy(data);
 		
 		#ifdef debug	
 			printf("src:\n");
@@ -97,10 +97,10 @@ static void _test_data_copy_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * data = data_new_stack(i, size_int);
+		Data * data = data_new_stack(i, size_int);
 		assert(*i == 666);
 		
-		data_t * copy = data_copy(data);
+		Data * copy = data_copy(data);
 		
 		#ifdef debug	
 			printf("src:\n");
@@ -137,8 +137,8 @@ static void _test_data_copy_() {
 	{
 		size_t size_int = sizeof(unsigned int);
 		unsigned int i = 666;
-		data_t * data = data_new_stack(&i, size_int);
-		data_t * copy = data_copy(data);
+		Data * data = data_new_stack(&i, size_int);
+		Data * copy = data_copy(data);
 		
 		#ifdef debug	
 			printf("src:\n");
@@ -173,9 +173,9 @@ static void _test_data_copy_dest_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * data = data_new((void**)&i, size_int);
+		Data * data = data_new((void**)&i, size_int);
 		assert(i == NULL);
-		data_t * copy = data_new_empty();
+		Data * copy = data_new_empty();
 		data_copy_dest(copy, data);
 		
 		#ifdef debug	
@@ -202,8 +202,8 @@ static void _test_data_copy_dest_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * data = data_new_stack(i, size_int);
-		data_t * copy = data_new_stack_empty();
+		Data * data = data_new_stack(i, size_int);
+		Data * copy = data_new_stack_empty();
 		data_copy_dest(copy, data);
 		assert(*i = 666);
 		#ifdef debug	
@@ -232,8 +232,8 @@ static void _test_data_copy_dest_() {
 	{
 		size_t size_int = sizeof(unsigned int);
 		unsigned int i = 666;
-		data_t * data = data_new_stack(&i, size_int);
-		data_t * copy = data_new_empty();
+		Data * data = data_new_stack(&i, size_int);
+		Data * copy = data_new_empty();
 		data_copy_dest(copy, data);
 		
 		#ifdef debug	
@@ -265,11 +265,11 @@ static void _test_data_empty_() {
 		printf(">>> _test_data_empty_:\n");
 	#endif
 	{
-		data_t * data = data_new_empty();
+		Data * data = data_new_empty();
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * full = data_new((void**)&i, size_int);
+		Data * full = data_new((void**)&i, size_int);
 		assert(i == NULL);
 		assert(data_is_empty(data));
 		assert(!data_is_empty(full));
@@ -282,11 +282,11 @@ static void _test_data_empty_() {
 	}
 	
 	{
-		data_t * data = data_new_stack_empty();
+		Data * data = data_new_stack_empty();
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * full = data_new_stack(i, size_int);
+		Data * full = data_new_stack(i, size_int);
 		assert(*i == 666);
 		assert(data_is_empty(data));
 		assert(!data_is_empty(full));
@@ -313,7 +313,7 @@ static void _test_data_clear_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * full = data_new((void**)&i, size_int);
+		Data * full = data_new((void**)&i, size_int);
 		assert(i == NULL);
 		assert(!data_is_empty(full));
 		#ifdef debug 
@@ -334,7 +334,7 @@ static void _test_data_clear_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * full = data_new_stack(i, size_int);
+		Data * full = data_new_stack(i, size_int);
 		assert(*i == 666);
 		assert(!data_is_empty(full));
 		#ifdef debug 
@@ -366,9 +366,9 @@ static void _test_data_move_() {
 		size_t size_int = sizeof(unsigned int);
 		unsigned int * i = malloc(size_int);
 		*i = 666;
-		data_t * full = data_new((void**)&i, size_int);
+		Data * full = data_new((void**)&i, size_int);
 		assert(i == NULL);
-		data_t * empty = data_new_empty();
+		Data * empty = data_new_empty();
 		
 		assert(data_is_empty(empty));
 		assert(!data_is_empty(full));
@@ -397,8 +397,8 @@ static void _test_data_move_() {
 	{
 		size_t size_int = sizeof(unsigned int);
 		unsigned int i = 666;
-		data_t * full = data_new_stack(&i, size_int);
-		data_t * empty = data_new_empty();
+		Data * full = data_new_stack(&i, size_int);
+		Data * empty = data_new_empty();
 		
 		assert(data_is_empty(empty));
 		assert(!data_is_empty(full));
@@ -440,9 +440,9 @@ static void _test_data_set_() {
 		*i = 666;
 		*i2 = 667;
 		
-		data_t * full = data_new((void**)&i, size_int);
+		Data * full = data_new((void**)&i, size_int);
 		assert(i == NULL);
-		data_t * empty = data_new_empty();
+		Data * empty = data_new_empty();
 		
 		assert(data_is_empty(empty));
 		assert(!data_is_empty(full));
@@ -476,8 +476,8 @@ static void _test_data_set_stack_(){
 		unsigned int i = 666;
 		unsigned int i2 = 667;
 		
-		data_t * full = data_new_stack(&i, size_int);
-		data_t * empty = data_new_empty();
+		Data * full = data_new_stack(&i, size_int);
+		Data * empty = data_new_empty();
 		
 		assert(data_is_empty(empty));
 		assert(!data_is_empty(full));
@@ -516,8 +516,8 @@ static void _test_data_override_(){
 		*i3 = 668;
 		*i4 = 669;
 		
-		data_t * full = data_new((void**)&i, size_int);
-		data_t * full2 = data_new((void**)&i2, size_int);
+		Data * full = data_new((void**)&i, size_int);
+		Data * full2 = data_new((void**)&i2, size_int);
 		
 		assert(i == NULL);
 		assert(i2 == NULL);
@@ -557,8 +557,8 @@ static void _test_data_override_stack_(){
 		unsigned int i3 = 668;
 		unsigned int i4 = 669;
 		
-		data_t * full = data_new_stack(&i, size_int);
-		data_t * full2 = data_new_stack(&i2, size_int);
+		Data * full = data_new_stack(&i, size_int);
+		Data * full2 = data_new_stack(&i2, size_int);
 		
 		assert(!data_is_empty(full2));
 		assert(!data_is_empty(full));
